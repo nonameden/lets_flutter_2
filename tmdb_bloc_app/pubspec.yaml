@@ -1,0 +1,22 @@
+name: tmdb_bloc_app
+description: Flutter app with BLoC.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  tmdb_infrastructure:
+    path: ../tmdb_infrastructure
+  tmdb_widgets:
+    path: ../tmdb_widgets
+  rxdart: ^0.18.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
