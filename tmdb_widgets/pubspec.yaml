@@ -1,0 +1,21 @@
+name: tmdb_widgets
+description: TMDB widgets library
+version: 1.0.0
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  built_collection: ^4.0.0
+  built_value: '>=5.5.5 <7.0.0'
+  tmdb_infrastructure:
+    path: ../tmdb_infrastructure
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
