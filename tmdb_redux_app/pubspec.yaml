@@ -1,0 +1,22 @@
+name: tmdb_redux_app
+description: Flutter app with Redux state.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  tmdb_infrastructure:
+    path: ../tmdb_infrastructure
+  tmdb_widgets:
+    path: ../tmdb_widgets
+  flutter_redux: ^0.5.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

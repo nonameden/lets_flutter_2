@@ -14,7 +14,7 @@ class Infrastructure {
   MovieRepository _movieRepo;
 
   Infrastructure({
-    @required this.apiKey,
+    this.apiKey: 'b3e15c2f101994e2eb4c0a785326a3a9',
     @required this.client,
     this.locale: 'en-Us',
   }) {

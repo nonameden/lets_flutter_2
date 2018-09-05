@@ -1,63 +1,90 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:tmdb_bloc_app/movie_bloc_provider.dart';
+import 'package:tmdb_infrastructure/infrastructure.dart';
+import 'package:tmdb_widgets/widgets.dart';
 
-void main() => runApp(new MyApp());
+void main() {
+  final infrastructure = Infrastructure(client: http.Client());
+  runApp(new MyApp(infrastructure: infrastructure));
+}
 
 class MyApp extends StatelessWidget {
+
+  final Infrastructure infrastructure;
+
+  const MyApp({Key key, @required this.infrastructure}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
+    return MoviesBlocProvider(
+      infrastructure: infrastructure,
+      child: new MaterialApp(
+        home: HomePage(),
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => new _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("BLoC sample"),
+          bottom: _buildTabBar(context),
+        ),
+        body: TabBarView(
           children: <Widget>[
-            new Text(
-              'You have pushed the button this many times:',
-            ),
-            new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
+            _buildUpcomingTab(context),
+            _buildFavouritesTab(context),
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
+    );
+  }
+
+  Widget _buildTabBar(BuildContext context) {
+    final bloc = MoviesBlocProvider.of(context);
+    return PreferredSize(
+      preferredSize: Size.fromHeight(48.0),
+          child: StreamBuilder<Iterable<Movie>>(
+        stream: bloc.favouriteMovies,
+        builder: (context, snapshot) {
+          return MovieListTabBar(favouritesCount: snapshot.data?.length ?? 0,);
+        },
       ),
+    );
+  }
+
+  Widget _buildUpcomingTab(BuildContext context) {
+    final bloc = MoviesBlocProvider.of(context);
+    return StreamBuilder<Iterable<Movie>>(
+      stream: bloc.movies,
+      builder: (context, snapshot) {
+        return MovieListTab(
+          isLoading: !snapshot.hasData,
+          hasError: snapshot.hasError,
+          movies: snapshot.data,
+          onRetry: () => bloc.load.add(null),
+          onTap: (movie) => bloc.addToFavourites.add(movie),
+        );
+      },
+    );
+  }
+
+  Widget _buildFavouritesTab(BuildContext context) {
+    final bloc = MoviesBlocProvider.of(context);
+    return StreamBuilder<Iterable<Movie>>(
+      stream: bloc.favouriteMovies,
+      builder: (context, snapshot) {
+        return MovieListTab(
+          isLoading: false,
+          movies: snapshot.data,
+          onTap: (movie) => bloc.removeFromFavourites.add(movie),
+        );
+      },
     );
   }
 }
