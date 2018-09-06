@@ -14,7 +14,7 @@ class Infrastructure {
   MovieRepository _movieRepo;
 
   Infrastructure({
-    this.apiKey: 'b3e15c2f101994e2eb4c0a785326a3a9',
+    this.apiKey: '<YOUR_TMDB_KEY>',
     @required this.client,
     this.locale: 'en-Us',
   }) {
